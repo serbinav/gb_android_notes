@@ -68,13 +68,3 @@
     </com.google.android.material.textfield.TextInputLayout>
 
 </LinearLayout>
-
-    <!--    <DatePicker-->
-    <!--        android:id="@+id/date"-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:datePickerMode="spinner"-->
-    <!--        android:calendarViewShown="false"-->
-    <!--        android:text="@string/hello_blank_fragment"-->
-    <!--        android:layout_gravity="center"-->
-    <!--        />-->
