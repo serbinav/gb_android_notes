@@ -9,6 +9,8 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.PopupMenu;
+import android.widget.Toast;
 
 import com.example.buynotes.R;
 import com.example.buynotes.data.Notes;
@@ -53,5 +55,28 @@ public class NotesDetailsFragment extends Fragment {
         notesMemo.setText(note.getMemo());
         notesList.setText(note.getList().toString());
         notesListDone.setText(note.getListDone().toString());
+
+        notesList.setOnClickListener(v -> externalOnClick(v));
+        notesListDone.setOnClickListener(v -> externalOnClick(v));
+    }
+
+    private void externalOnClick(View v) {
+        PopupMenu menu = new PopupMenu(requireContext(), v);
+        getActivity().getMenuInflater().inflate(R.menu.menu_popup, menu.getMenu());
+        menu.setOnMenuItemClickListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.act_done:
+                    Toast.makeText(requireContext(),
+                            R.string.welldone,
+                            Toast.LENGTH_SHORT).show();
+                    return true;
+                default:
+                    Toast.makeText(requireContext(),
+                            item.getTitle(),
+                            Toast.LENGTH_SHORT).show();
+                    return true;
+            }
+        });
+        menu.show();
     }
 }

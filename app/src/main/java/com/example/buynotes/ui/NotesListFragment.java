@@ -27,13 +27,9 @@ public class NotesListFragment extends Fragment {
         void onNotesClicked(Notes note);
     }
 
-    private NotesRepository notesRepository;
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        notesRepository = new NotesRepositoryImpl();
     }
 
     private onNotesClicked onNotesClicked;
@@ -63,24 +59,5 @@ public class NotesListFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        LinearLayout notesList = view.findViewById(R.id.notes_list_container);
-        List<Notes> notes = notesRepository.getNotes();
-
-        for (Notes note : notes) {
-            View itemView = LayoutInflater.from(requireContext()).inflate(R.layout.item_notes, notesList, false);
-            TextView notesName = itemView.findViewById(R.id.notes_name);
-            notesName.setText(note.getName());
-            TextView notesDate = itemView.findViewById(R.id.notes_date);
-            DateFormat df = new SimpleDateFormat(getString(R.string.simple_date_format));
-            notesDate.setText(df.format(new Date(note.getDate())));
-
-            itemView.setOnClickListener(v -> {
-                if (onNotesClicked != null) {
-                    onNotesClicked.onNotesClicked(note);
-                }
-            });
-
-            notesList.addView(itemView);
-        }
     }
 }
