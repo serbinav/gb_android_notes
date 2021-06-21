@@ -9,4 +9,20 @@
     <string name="notes_list">Список покупок/дел </string>
     <string name="notes_list_done">Список покупок/дел (выполненных)</string>
     <string name="number_lines">3</string>
+    <string name="action_add_new">Создать новый список +</string>
+    <string name="action_feedback">Обратная связь</string>
+    <string name="action_settings">Настройки</string>
+    <string name="action_help">Помощь</string>
+    <string name="action_header">Учетная запись</string>
+    <string name="main_window">Главное окно программы</string>
+    <string name="action_account">Учетная запись</string>
+    <string name="icon_on_toolbar">Иконка на тулбаре</string>
+    <string name="action_send">Отправить</string>
+    <string name="action_duplicate">Дублировать</string>
+    <string name="action_rename">Переименовать</string>
+    <string name="action_clear">Очистить</string>
+    <string name="action_del">Удалить</string>
+    <string name="action_edit">Изменить</string>
+    <string name="action_done">Выполнено</string>
+    <string name="welldone">Успешно</string>
 </resources>
