@@ -11,7 +11,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:padding="@dimen/default_padding"
+        android:padding="@dimen/padding_default"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
         tools:text="@string/notes_tool_name">
     </TextView>
@@ -21,7 +21,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:padding="@dimen/default_padding"
+        android:padding="@dimen/padding_default"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
         tools:text="@string/notes_tool_date">
     </TextView>
