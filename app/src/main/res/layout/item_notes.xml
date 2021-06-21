@@ -25,5 +25,4 @@
         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
         tools:text="@string/notes_tool_date">
     </TextView>
-
 </LinearLayout>

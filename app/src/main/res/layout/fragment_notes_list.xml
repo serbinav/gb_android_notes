@@ -12,5 +12,4 @@
         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
         android:text="@string/main_window">
     </TextView>
-
 </LinearLayout>
