@@ -24,7 +24,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements NotesListFragment.onNotesClicked {
+public class MainActivity extends AppCompatActivity {
 
     private NotesRepository notesRepository;
 
@@ -73,25 +73,12 @@ public class MainActivity extends AppCompatActivity implements NotesListFragment
                 default:
                     getSupportFragmentManager()
                             .beginTransaction()
-                            .replace(
-                                    R.id.notes_list_fragment,
-                                    NotesDetailsFragment.newInstance(notes.get(item.getItemId())))
+                            .replace(R.id.notes_list_fragment, NotesDetailsFragment.newInstance(notes.get(item.getItemId())))
+                            .addToBackStack(null)
                             .commit();
                     return true;
             }
         });
-    }
-
-    @Override
-    public void onNotesClicked(Notes note) {
-        if (getResources().getBoolean(R.bool.isLandscape)) {
-
-        } else {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.notes_list_fragment, NotesDetailsFragment.newInstance(note))
-                    .commit();
-        }
     }
 
     @Override
