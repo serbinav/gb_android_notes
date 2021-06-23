@@ -48,13 +48,13 @@ public class NotesDetailsFragment extends Fragment {
         TextInputEditText notesList = view.findViewById(R.id.list);
         TextInputEditText notesListDone = view.findViewById(R.id.list_done);
 
-        Notes note = getArguments().getParcelable(ARG_NOTES);
-        notesName.setText(note.getName());
-        DateFormat df = new SimpleDateFormat(getString(R.string.simple_date_format));
-        notesDate.setText(df.format(new Date(note.getDate())));
-        notesMemo.setText(note.getMemo());
-        notesList.setText(note.getList().toString());
-        notesListDone.setText(note.getListDone().toString());
+        Bundle args = getArguments();
+        if (args != null && args.containsKey(ARG_NOTES)) {
+            Notes note = args.getParcelable(ARG_NOTES);
+            notesName.setText(note.getName());
+            DateFormat df = new SimpleDateFormat(getString(R.string.simple_date_format));
+            notesDate.setText(df.format(new Date(note.getDate())));
+            notesMemo.setText(note.getMemo());
 
         notesList.setOnClickListener(v -> externalOnClick(v));
         notesListDone.setOnClickListener(v -> externalOnClick(v));

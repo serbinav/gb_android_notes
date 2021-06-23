@@ -17,8 +17,6 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/name"
                 style="@style/not_editable_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:hint="@string/notes_name" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -29,8 +27,6 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/date"
                 style="@style/not_editable_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:hint="@string/notes_date" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -41,8 +37,6 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/memo"
                 style="@style/not_editable_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:hint="@string/notes_memo"
                 android:lines="@string/number_lines" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -54,8 +48,6 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/list"
                 style="@style/not_editable_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:hint="@string/notes_list" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -66,8 +58,6 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/list_done"
                 style="@style/not_editable_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:hint="@string/notes_list_done" />
         </com.google.android.material.textfield.TextInputLayout>
 
