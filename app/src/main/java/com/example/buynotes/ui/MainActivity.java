@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
         NavigationView navigationView = findViewById(R.id.navigation_view);
         List<Notes> notes = notesRepository.getNotes();
         for (int i = 0; i < notes.size(); i++) {
-            MenuItem myMoveGroupItem = navigationView.getMenu().findItem(R.id.act_add_new);
+            MenuItem myMoveGroupItem = navigationView.getMenu().findItem(R.id.act_notes);
             SubMenu subMenu = myMoveGroupItem.getSubMenu();
             DateFormat df = new SimpleDateFormat(getString(R.string.simple_date_format));
             subMenu.add(
@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.act_account:
+            case R.id.act_add_new:
                 Toast.makeText(getApplicationContext(), R.string.icon_on_toolbar, Toast.LENGTH_SHORT).show();
                 return true;
             default:

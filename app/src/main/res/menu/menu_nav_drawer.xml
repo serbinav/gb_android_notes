@@ -2,8 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/act_add_new"
-        android:title="@string/action_add_new"
+        android:id="@+id/act_notes"
+        android:title="@string/action_notes"
         app:showAsAction="never">
         <menu>
             <group>android:id="@+id/group"</group>
