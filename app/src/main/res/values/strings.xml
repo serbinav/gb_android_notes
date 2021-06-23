@@ -1,7 +1,5 @@
 <resources>
     <string name="app_name">buy notes</string>
-    <string name="notes_tool_name">Траты</string>
-    <string name="notes_tool_date">20.01.2012</string>
     <string name="simple_date_format">dd.MM.yyyy</string>
     <string name="notes_name">Название заметки</string>
     <string name="notes_date">Дата создания</string>
@@ -25,4 +23,5 @@
     <string name="action_edit">Изменить</string>
     <string name="action_done">Выполнено</string>
     <string name="welldone">Успешно</string>
+    <string name="list_tool_name">Кофе</string>
 </resources>
