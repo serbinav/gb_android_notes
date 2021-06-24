@@ -26,14 +26,15 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private NotesRepository notesRepository;
+    private NotesRepository notesRepository = new NotesRepositoryImpl();
+    private List<Notes> notes = notesRepository.getNotes();
+    private int openNotes = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        notesRepository = new NotesRepositoryImpl();
 
         DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -49,7 +50,6 @@ public class MainActivity extends AppCompatActivity {
         toggle.syncState();
 
         NavigationView navigationView = findViewById(R.id.navigation_view);
-        List<Notes> notes = notesRepository.getNotes();
         for (int i = 0; i < notes.size(); i++) {
             MenuItem myMoveGroupItem = navigationView.getMenu().findItem(R.id.act_notes);
             SubMenu subMenu = myMoveGroupItem.getSubMenu();
@@ -71,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), item.getTitle(), Toast.LENGTH_SHORT).show();
                     return true;
                 default:
+                    openNotes = item.getItemId();
                     getSupportFragmentManager()
                             .beginTransaction()
                             .replace(R.id.notes_list_fragment, NotesDetailsFragment.newInstance(notes.get(item.getItemId())))
@@ -93,6 +94,16 @@ public class MainActivity extends AppCompatActivity {
             case R.id.act_add_new:
                 Toast.makeText(getApplicationContext(), R.string.icon_on_toolbar, Toast.LENGTH_SHORT).show();
                 return true;
+            case R.id.act_edit:
+                if (openNotes >= 0) {
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.notes_list_fragment, NotesEditFragment.newInstance(notes.get(openNotes)))
+                            .addToBackStack(null)
+                            .commit();
+                    return true;
+                }
+                return false;
             default:
                 Toast.makeText(getApplicationContext(), item.getTitle(), Toast.LENGTH_SHORT).show();
                 return true;
