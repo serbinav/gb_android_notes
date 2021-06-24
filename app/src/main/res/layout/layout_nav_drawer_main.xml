@@ -17,7 +17,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/notes_list_fragment"
-        android:name="com.example.buynotes.ui.NotesListFragment"
+        android:name="com.example.buynotes.ui.EmptyNotesFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">

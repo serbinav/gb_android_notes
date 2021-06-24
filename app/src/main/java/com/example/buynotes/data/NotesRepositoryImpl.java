@@ -18,12 +18,18 @@ public class NotesRepositoryImpl implements NotesRepository {
         shoppingList.add("сыр");
         note2.setList(shoppingList);
 
+        Notes note3 = new Notes("дела",
+                new GregorianCalendar(2021, 3, 20).getTimeInMillis());
+        ArrayList shoppingDone= new ArrayList<String>();
+        shoppingDone.add("парикмахерская");
+        shoppingDone.add("рдж билеты");
+        shoppingDone.add("собрать чемодан");
+        note3.setListDone(shoppingDone);
+
         result.add(new Notes("траты",
                 new GregorianCalendar(2021, 0, 5).getTimeInMillis()));
         result.add(note2);
-        result.add(new Notes("дела",
-                new GregorianCalendar(2021, 3, 20).getTimeInMillis()));
-
+        result.add(note3);
         return result;
     }
 }
