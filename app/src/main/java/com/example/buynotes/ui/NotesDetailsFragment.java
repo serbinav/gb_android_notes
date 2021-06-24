@@ -5,22 +5,22 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.PopupMenu;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.buynotes.R;
 import com.example.buynotes.data.Notes;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 
 public class NotesDetailsFragment extends Fragment {
@@ -59,11 +59,25 @@ public class NotesDetailsFragment extends Fragment {
             notesDate.setText(df.format(new Date(note.getDate())));
             notesMemo.setText(note.getMemo());
 
-            LinearLayout containerList = view.findViewById(R.id.list_elem);
-            inflaterContainer(note.getList(), containerList, getResources().getColor(R.color.red_200));
+            RecyclerView containerList = view.findViewById(R.id.list_elem);
+            containerList.setLayoutManager(new LinearLayoutManager(requireContext()));
+            NotesAdapter notesAdapter = new NotesAdapter();
+            notesAdapter.setDate(note.getList());
+            notesAdapter.setColor(getResources().getColor(R.color.red_200));
+            notesAdapter.setListener(str ->
+                    Snackbar.make(view, str, Snackbar.LENGTH_SHORT).show()
+            );
+            containerList.setAdapter(notesAdapter);
 
-            LinearLayout containerListDone = view.findViewById(R.id.list_done_elem);
-            inflaterContainer(note.getListDone(), containerListDone, getResources().getColor(R.color.green_200));
+            RecyclerView containerListDone = view.findViewById(R.id.list_done_elem);
+            containerListDone.setLayoutManager(new LinearLayoutManager(requireContext()));
+            NotesAdapter notesDoneAdapter = new NotesAdapter();
+            notesDoneAdapter.setDate(note.getListDone());
+            notesDoneAdapter.setColor(getResources().getColor(R.color.green_200));
+            notesDoneAdapter.setListener(str ->
+                    Snackbar.make(view, str, Snackbar.LENGTH_SHORT).show()
+            );
+            containerListDone.setAdapter(notesDoneAdapter);
         }
         notesList.setOnClickListener(v -> externalOnClick(v));
         notesListDone.setOnClickListener(v -> externalOnClick(v));
@@ -87,18 +101,5 @@ public class NotesDetailsFragment extends Fragment {
             }
         });
         menu.show();
-    }
-
-    private void inflaterContainer(ArrayList<String> list, LinearLayout layout, int color) {
-        for (String str : list) {
-            View itemView = LayoutInflater.from(requireContext()).inflate(
-                    R.layout.item_list,
-                    layout,
-                    false);
-            TextView title = itemView.findViewById(R.id.elem_name);
-            title.setText(str);
-            title.setBackgroundColor(color);
-            layout.addView(itemView);
-        }
     }
 }

@@ -51,12 +51,11 @@
                 android:hint="@string/notes_list" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <LinearLayout
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/list_elem"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-        </LinearLayout>
+            android:layout_height="match_parent">
+        </androidx.recyclerview.widget.RecyclerView>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
@@ -68,12 +67,11 @@
                 android:hint="@string/notes_list_done" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <LinearLayout
-            android:id="@+id/list_done_elem"
+        <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
-        </LinearLayout>
+            android:id="@+id/list_done_elem">
+        </androidx.recyclerview.widget.RecyclerView>
 
     </LinearLayout>
 </ScrollView>
