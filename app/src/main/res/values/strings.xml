@@ -16,8 +16,9 @@
     <string name="main_window">Главное окно программы</string>
     <!--    элемент временно отсутствует-->
     <string name="action_account">Учетная запись</string>
-    <string name="icon_on_toolbar">Иконка на тулбаре</string>
     <string name="action_send">Отправить</string>
+
+    <string name="icon_on_toolbar">Иконка на тулбаре</string>
     <string name="action_duplicate">Дублировать</string>
     <string name="action_rename">Переименовать</string>
     <string name="action_clear">Очистить</string>

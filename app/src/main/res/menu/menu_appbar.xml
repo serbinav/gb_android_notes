@@ -12,8 +12,8 @@
         android:icon="@drawable/ic_baseline_edit_24"
         app:showAsAction="ifRoom"/>
     <item
-        android:id="@+id/act_send"
-        android:title="@string/action_send"
+        android:id="@+id/act_del"
+        android:title="@string/action_del"
         app:showAsAction="never" />
     <item
         android:id="@+id/act_duplicate"
@@ -22,10 +22,6 @@
     <item
         android:id="@+id/act_rename"
         android:title="@string/action_rename"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/act_del"
-        android:title="@string/action_del"
         app:showAsAction="never" />
     <item
         android:id="@+id/act_clear"
