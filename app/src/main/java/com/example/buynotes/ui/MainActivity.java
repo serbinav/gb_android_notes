@@ -22,6 +22,7 @@ import com.google.android.material.navigation.NavigationView;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -34,7 +35,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
 
         DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -50,10 +50,10 @@ public class MainActivity extends AppCompatActivity {
         toggle.syncState();
 
         NavigationView navigationView = findViewById(R.id.navigation_view);
+        MenuItem myMoveGroupItem = navigationView.getMenu().findItem(R.id.act_notes);
+        SubMenu subMenu = myMoveGroupItem.getSubMenu();
+        DateFormat df = new SimpleDateFormat(getString(R.string.simple_date_format));
         for (int i = 0; i < notes.size(); i++) {
-            MenuItem myMoveGroupItem = navigationView.getMenu().findItem(R.id.act_notes);
-            SubMenu subMenu = myMoveGroupItem.getSubMenu();
-            DateFormat df = new SimpleDateFormat(getString(R.string.simple_date_format));
             subMenu.add(
                     Menu.NONE,
                     i,
@@ -90,9 +90,23 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        NavigationView navigationView = findViewById(R.id.navigation_view);
+        MenuItem myMoveGroupItem = navigationView.getMenu().findItem(R.id.act_notes);
+        SubMenu subMenu = myMoveGroupItem.getSubMenu();
+        DateFormat df = new SimpleDateFormat(getString(R.string.simple_date_format));
+
         switch (item.getItemId()) {
             case R.id.act_add_new:
-                Toast.makeText(getApplicationContext(), R.string.icon_on_toolbar, Toast.LENGTH_SHORT).show();
+                Notes notesAdd = notesRepository.add("This is new Notes",
+                        new GregorianCalendar(2021, 6, 24).getTimeInMillis());
+                notes = notesRepository.getNotes();
+
+                subMenu.add(
+                        Menu.NONE,
+                        notes.size() - 1,
+                        Menu.NONE,
+                        notesAdd.getName() + " - " + df.format(new Date(notesAdd.getDate()))
+                );
                 return true;
             case R.id.act_edit:
                 if (openNotes >= 0) {
@@ -101,6 +115,23 @@ public class MainActivity extends AppCompatActivity {
                             .replace(R.id.notes_list_fragment, NotesEditFragment.newInstance(notes.get(openNotes)))
                             .addToBackStack(null)
                             .commit();
+                    return true;
+                }
+                return false;
+            case R.id.act_del:
+                if (openNotes >= 0) {
+                    notesRepository.delete(openNotes);
+                    notes = notesRepository.getNotes();
+                    subMenu.clear();
+                    for (int i = 0; i < notes.size(); i++) {
+                        subMenu.add(
+                                Menu.NONE,
+                                i,
+                                Menu.NONE,
+                                notes.get(i).getName() + " - " + df.format(new Date(notes.get(i).getDate()))
+                        );
+                    }
+                    openNotes = openNotes - 1;
                     return true;
                 }
                 return false;
