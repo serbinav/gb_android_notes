@@ -6,10 +6,9 @@ import java.util.List;
 
 public class NotesRepositoryImpl implements NotesRepository {
 
-    @Override
-    public List<Notes> getNotes() {
-        ArrayList<Notes> result = new ArrayList<>();
+    private final ArrayList<Notes> notes = new ArrayList<>();
 
+    public NotesRepositoryImpl(){
         Notes note2 = new Notes("покупки",
                 new GregorianCalendar(2021, 1, 10).getTimeInMillis());
         ArrayList shoppingList = new ArrayList<String>();
@@ -26,10 +25,42 @@ public class NotesRepositoryImpl implements NotesRepository {
         shoppingDone.add("собрать чемодан");
         note3.setListDone(shoppingDone);
 
-        result.add(new Notes("траты",
+        notes.add(new Notes("траты",
                 new GregorianCalendar(2021, 0, 5).getTimeInMillis()));
-        result.add(note2);
-        result.add(note3);
-        return result;
+        notes.add(note2);
+        notes.add(note3);
+    }
+
+    @Override
+    public List<Notes> getNotes() {
+        return notes;
+    }
+
+    @Override
+    public void clear() {
+        notes.clear();
+    }
+
+    @Override
+    public void delete(int index) {
+        notes.remove(index);
+    }
+
+    @Override
+    public Notes add(String name, long date) {
+        //UUID.randomUUID().toString()
+        Notes notesAdd = new Notes(name, date);
+        notes.add(notesAdd);
+        return notesAdd;
+    }
+
+    @Override
+    public Notes addFull(String name, String memo, long date, ArrayList<String> list, ArrayList<String> listDone) {
+        Notes notesAdd = new Notes(name, date);
+        notesAdd.setMemo(memo);
+        notesAdd.setList(list);
+        notesAdd.setListDone(listDone);
+        notes.add(notesAdd);
+        return notesAdd;
     }
 }
