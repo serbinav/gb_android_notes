@@ -19,4 +19,8 @@ public interface NotesRepository {
                   ArrayList<String> list,
                   ArrayList<String> listDone);
 
+    void editNotes(int number,
+                  ArrayList<String> list,
+                  ArrayList<String> listDone);
+
 }

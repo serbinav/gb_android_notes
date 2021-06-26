@@ -21,7 +21,7 @@ public class NotesRepositoryImpl implements NotesRepository {
                 new GregorianCalendar(2021, 3, 20).getTimeInMillis());
         ArrayList shoppingDone= new ArrayList<String>();
         shoppingDone.add("парикмахерская");
-        shoppingDone.add("рдж билеты");
+        shoppingDone.add("ржд билеты");
         shoppingDone.add("собрать чемодан");
         note3.setListDone(shoppingDone);
 
@@ -62,5 +62,12 @@ public class NotesRepositoryImpl implements NotesRepository {
         notesAdd.setListDone(listDone);
         notes.add(notesAdd);
         return notesAdd;
+    }
+
+    @Override
+    public void editNotes(int number, ArrayList<String> list, ArrayList<String> listDone) {
+        Notes notesGet = notes.get(number);
+        notesGet.setList(list);
+        notesGet.setListDone(listDone);
     }
 }
