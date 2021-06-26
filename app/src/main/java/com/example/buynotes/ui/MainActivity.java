@@ -21,15 +21,16 @@ import com.google.android.material.navigation.NavigationView;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements NotesDetailsFragment.OnChangeDataInList {
 
     private NotesRepository notesRepository = new NotesRepositoryImpl();
     private List<Notes> notes = notesRepository.getNotes();
-    private int openNotes = -1;
+    private int openNotesNumber = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,10 +72,15 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), item.getTitle(), Toast.LENGTH_SHORT).show();
                     return true;
                 default:
-                    openNotes = item.getItemId();
+                    openNotesNumber = item.getItemId();
                     getSupportFragmentManager()
                             .beginTransaction()
-                            .replace(R.id.notes_list_fragment, NotesDetailsFragment.newInstance(notes.get(item.getItemId())))
+                            .replace(R.id.notes_list_fragment,
+                                    NotesDetailsFragment.newInstance(
+                                            notes.get(item.getItemId()),
+                                            item.getItemId()
+                                    )
+                            )
                             .addToBackStack(null)
                             .commit();
                     return true;
@@ -109,18 +115,18 @@ public class MainActivity extends AppCompatActivity {
                 );
                 return true;
             case R.id.act_edit:
-                if (openNotes >= 0) {
+                if (openNotesNumber >= 0) {
                     getSupportFragmentManager()
                             .beginTransaction()
-                            .replace(R.id.notes_list_fragment, NotesEditFragment.newInstance(notes.get(openNotes)))
+                            .replace(R.id.notes_list_fragment, NotesEditFragment.newInstance(notes.get(openNotesNumber)))
                             .addToBackStack(null)
                             .commit();
                     return true;
                 }
                 return false;
             case R.id.act_del:
-                if (openNotes >= 0) {
-                    notesRepository.delete(openNotes);
+                if (openNotesNumber >= 0) {
+                    notesRepository.delete(openNotesNumber);
                     notes = notesRepository.getNotes();
                     subMenu.clear();
                     for (int i = 0; i < notes.size(); i++) {
@@ -131,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
                                 notes.get(i).getName() + " - " + df.format(new Date(notes.get(i).getDate()))
                         );
                     }
-                    openNotes = openNotes - 1;
+                    openNotesNumber = openNotesNumber - 1;
                     return true;
                 }
                 return false;
@@ -139,5 +145,11 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), item.getTitle(), Toast.LENGTH_SHORT).show();
                 return true;
         }
+    }
+
+    @Override
+    public void onChangeDataInList(int noteNumber, ArrayList<String> list, ArrayList<String> listDone) {
+        notesRepository.editNotes(noteNumber, list, listDone);
+        notes = notesRepository.getNotes();
     }
 }

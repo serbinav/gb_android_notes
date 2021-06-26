@@ -1,5 +1,6 @@
 package com.example.buynotes.ui;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -24,9 +25,14 @@ import com.google.android.material.textfield.TextInputEditText;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class NotesDetailsFragment extends Fragment {
+
+    public interface OnChangeDataInList {
+        void onChangeDataInList(int noteNumber, ArrayList<String> list, ArrayList<String> listDone);
+    }
 
     public enum ChooseAdapter {
         NOTES_ADAPTER,
@@ -37,10 +43,13 @@ public class NotesDetailsFragment extends Fragment {
     private static final String ARG_NOTES_NUMBER = "ARG_NOTES_NUMBER";
     private NotesAdapter notesAdapter;
     private NotesAdapter notesDoneAdapter;
+    private ChooseAdapter adapter;
+
+    private OnChangeDataInList onChangeDataInList;
+    private int currentNoteNumber;
 
     private int longClickIndex;
     private String longClickStr;
-    private ChooseAdapter adapter;
 
     public static NotesDetailsFragment newInstance(Notes note, int noteNumber) {
         NotesDetailsFragment fragment = new NotesDetailsFragment();
@@ -49,6 +58,20 @@ public class NotesDetailsFragment extends Fragment {
         args.putInt(ARG_NOTES_NUMBER, noteNumber);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if (context instanceof OnChangeDataInList) {
+            onChangeDataInList = (OnChangeDataInList) context;
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        onChangeDataInList = null;
     }
 
     @Override
@@ -77,6 +100,8 @@ public class NotesDetailsFragment extends Fragment {
         Bundle args = getArguments();
         if (args != null && args.containsKey(ARG_NOTES)) {
             Notes note = args.getParcelable(ARG_NOTES);
+            currentNoteNumber = args.getInt(ARG_NOTES_NUMBER);
+
             notesName.setText(note.getName());
             DateFormat df = new SimpleDateFormat(getString(R.string.simple_date_format));
             notesDate.setText(df.format(new Date(note.getDate())));
@@ -152,39 +177,53 @@ public class NotesDetailsFragment extends Fragment {
 
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
-        if (adapter == ChooseAdapter.NOTES_ADAPTER) {
-            switch (item.getItemId()) {
-                case R.id.act_add:
-                    int pos = notesAdapter.add("новое дело");
-                    notesAdapter.notifyItemInserted(pos);
-                    return true;
-                case R.id.act_delete:
-                    notesAdapter.remove(longClickIndex);
-                    notesAdapter.notifyItemRemoved(longClickIndex);
-                    return true;
-                case R.id.act_transfer:
-                    notesAdapter.remove(longClickIndex);
-                    notesAdapter.notifyItemRemoved(longClickIndex);
-                    int position = notesDoneAdapter.add(longClickStr);
-                    notesDoneAdapter.notifyItemInserted(position);
-                    return true;
-            }
-        } else {
-            switch (item.getItemId()) {
-                case R.id.act_add:
-                    int pos = notesDoneAdapter.add("новое дело");
-                    notesDoneAdapter.notifyItemInserted(pos);
-                    return true;
-                case R.id.act_delete:
-                    notesDoneAdapter.remove(longClickIndex);
-                    notesDoneAdapter.notifyItemRemoved(longClickIndex);
-                    return true;
-                case R.id.act_transfer:
-                    notesDoneAdapter.remove(longClickIndex);
-                    notesDoneAdapter.notifyItemRemoved(longClickIndex);
-                    int position = notesAdapter.add(longClickStr);
-                    notesAdapter.notifyItemInserted(position);
-                    return true;
+        if (onChangeDataInList != null) {
+            if (adapter == ChooseAdapter.NOTES_ADAPTER) {
+                switch (item.getItemId()) {
+                    case R.id.act_add:
+                        int pos = notesAdapter.add("новое дело");
+                        notesAdapter.notifyItemInserted(pos);
+                        break;
+                    case R.id.act_delete:
+                        notesAdapter.remove(longClickIndex);
+                        notesAdapter.notifyItemRemoved(longClickIndex);
+                        break;
+                    case R.id.act_transfer:
+                        notesAdapter.remove(longClickIndex);
+                        notesAdapter.notifyItemRemoved(longClickIndex);
+                        int position = notesDoneAdapter.add(longClickStr);
+                        notesDoneAdapter.notifyItemInserted(position);
+                        break;
+                }
+                onChangeDataInList.onChangeDataInList(
+                        currentNoteNumber,
+                        notesAdapter.get(),
+                        notesDoneAdapter.get()
+                );
+                return true;
+            } else {
+                switch (item.getItemId()) {
+                    case R.id.act_add:
+                        int pos = notesDoneAdapter.add("новое дело");
+                        notesDoneAdapter.notifyItemInserted(pos);
+                        break;
+                    case R.id.act_delete:
+                        notesDoneAdapter.remove(longClickIndex);
+                        notesDoneAdapter.notifyItemRemoved(longClickIndex);
+                        break;
+                    case R.id.act_transfer:
+                        notesDoneAdapter.remove(longClickIndex);
+                        notesDoneAdapter.notifyItemRemoved(longClickIndex);
+                        int position = notesAdapter.add(longClickStr);
+                        notesAdapter.notifyItemInserted(position);
+                        break;
+                }
+                onChangeDataInList.onChangeDataInList(
+                        currentNoteNumber,
+                        notesAdapter.get(),
+                        notesDoneAdapter.get()
+                );
+                return true;
             }
         }
         return super.onContextItemSelected(item);

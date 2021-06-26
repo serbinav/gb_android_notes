@@ -42,6 +42,10 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHold
         return todoList.size() - 1;
     }
 
+    public ArrayList<String> get() {
+        return todoList;
+    }
+
     public void remove(int index) {
         todoList.remove(index);
     }
