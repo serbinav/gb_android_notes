@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentManager;
 
 import android.os.Bundle;
 import android.view.Menu;
@@ -22,8 +23,8 @@ import com.google.android.material.navigation.NavigationView;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements NotesDetailsFragment.OnChangeDataInList {
@@ -103,8 +104,8 @@ public class MainActivity extends AppCompatActivity implements NotesDetailsFragm
 
         switch (item.getItemId()) {
             case R.id.act_add_new:
-                Notes notesAdd = notesRepository.add("This is new Notes",
-                        new GregorianCalendar(2021, 6, 24).getTimeInMillis());
+                Notes notesAdd = notesRepository.add(getString(R.string.empty_note),
+                        Calendar.getInstance().getTimeInMillis());
                 notes = notesRepository.getNotes();
 
                 subMenu.add(
@@ -113,12 +114,22 @@ public class MainActivity extends AppCompatActivity implements NotesDetailsFragm
                         Menu.NONE,
                         notesAdd.getName() + " - " + df.format(new Date(notesAdd.getDate()))
                 );
+                openNotesNumber = notes.size() - 1;
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.notes_list_fragment,
+                                NotesEditFragment.newInstance(notes.get(openNotesNumber))
+                        )
+                        .addToBackStack(null)
+                        .commit();
                 return true;
             case R.id.act_edit:
                 if (openNotesNumber >= 0) {
                     getSupportFragmentManager()
                             .beginTransaction()
-                            .replace(R.id.notes_list_fragment, NotesEditFragment.newInstance(notes.get(openNotesNumber)))
+                            .replace(R.id.notes_list_fragment,
+                                    NotesEditFragment.newInstance(notes.get(openNotesNumber))
+                            )
                             .addToBackStack(null)
                             .commit();
                     return true;
@@ -137,6 +148,7 @@ public class MainActivity extends AppCompatActivity implements NotesDetailsFragm
                                 notes.get(i).getName() + " - " + df.format(new Date(notes.get(i).getDate()))
                         );
                     }
+                    getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                     openNotesNumber = openNotesNumber - 1;
                     return true;
                 }
