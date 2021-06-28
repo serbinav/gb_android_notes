@@ -1,4 +1,4 @@
-package com.example.buynotes.ui;
+package com.example.buynotes.recycler;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.buynotes.R;
@@ -16,15 +17,37 @@ import java.util.List;
 public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHolder> {
 
     public interface OnItemClickListener {
-        void onItemClickListener(@NonNull String str);
+        void onItemClickListener(@NonNull String str, int index);
     }
 
+    public interface OnItemLongClickListener {
+        void onItemLongClickListener(@NonNull String str, int index);
+    }
+
+    private Fragment fragment;
     private ArrayList<String> todoList = new ArrayList<>();
     private int colorRes;
+
+    public NotesAdapter(Fragment fragment) {
+        this.fragment = fragment;
+    }
 
     public void setDate(List<String> toSet) {
         todoList.clear();
         todoList.addAll(toSet);
+    }
+
+    public int add(String str) {
+        todoList.add(str);
+        return todoList.size() - 1;
+    }
+
+    public ArrayList<String> get() {
+        return todoList;
+    }
+
+    public void remove(int index) {
+        todoList.remove(index);
     }
 
     public void setColor(int color) {
@@ -33,12 +56,22 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHold
 
     private OnItemClickListener listener;
 
+    private OnItemLongClickListener longClickListener;
+
     public OnItemClickListener getListener() {
         return listener;
     }
 
     public void setListener(OnItemClickListener listener) {
         this.listener = listener;
+    }
+
+    public OnItemLongClickListener getLongClickListener() {
+        return longClickListener;
+    }
+
+    public void setLongClickListener(OnItemLongClickListener longClickListener) {
+        this.longClickListener = longClickListener;
     }
 
     @NonNull
@@ -69,12 +102,25 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHold
         public NoteViewHolder(@NonNull View itemView) {
             super(itemView);
 
+            fragment.registerForContextMenu(itemView);
+
             itemView.setOnClickListener(v -> {
                         if (getListener() != null) {
-                            getListener().onItemClickListener(todoList.get(getAdapterPosition()));
+                            int index = getAdapterPosition();
+                            getListener().onItemClickListener(todoList.get(index), index);
                         }
                     }
             );
+
+            itemView.setOnLongClickListener(v -> {
+                itemView.showContextMenu();
+
+                if (getLongClickListener() != null) {
+                    int index = getAdapterPosition();
+                    getLongClickListener().onItemLongClickListener(todoList.get(index), index);
+                }
+                return true;
+            });
 
             title = itemView.findViewById(R.id.elem_name);
         }

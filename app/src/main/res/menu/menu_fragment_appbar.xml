@@ -2,7 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/act_add"
-        android:title="@string/action_add"
-        app:showAsAction="never" />
+        android:id="@+id/act_save"
+        android:title="@string/action_save"
+        android:icon="@drawable/ic_baseline_check_24"
+        app:showAsAction="ifRoom"/>
 </menu>
