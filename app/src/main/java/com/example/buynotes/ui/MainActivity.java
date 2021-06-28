@@ -27,11 +27,17 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements NotesDetailsFragment.OnChangeDataInList {
+public class MainActivity extends AppCompatActivity implements NotesDetailsFragment.OnChangeDataInList,
+        NotesEditFragment.OnChangeDataNotes {
 
     private NotesRepository notesRepository = new NotesRepositoryImpl();
     private List<Notes> notes = notesRepository.getNotes();
     private int openNotesNumber = -1;
+
+    NavigationView navigationView;
+    MenuItem myMoveGroupItem;
+    SubMenu subMenu;
+    DateFormat df;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,10 +57,10 @@ public class MainActivity extends AppCompatActivity implements NotesDetailsFragm
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = findViewById(R.id.navigation_view);
-        MenuItem myMoveGroupItem = navigationView.getMenu().findItem(R.id.act_notes);
-        SubMenu subMenu = myMoveGroupItem.getSubMenu();
-        DateFormat df = new SimpleDateFormat(getString(R.string.simple_date_format));
+        navigationView = findViewById(R.id.navigation_view);
+        myMoveGroupItem = navigationView.getMenu().findItem(R.id.act_notes);
+        subMenu = myMoveGroupItem.getSubMenu();
+        df = new SimpleDateFormat(getString(R.string.simple_date_format));
         for (int i = 0; i < notes.size(); i++) {
             subMenu.add(
                     Menu.NONE,
@@ -78,8 +84,8 @@ public class MainActivity extends AppCompatActivity implements NotesDetailsFragm
                             .beginTransaction()
                             .replace(R.id.notes_list_fragment,
                                     NotesDetailsFragment.newInstance(
-                                            notes.get(item.getItemId()),
-                                            item.getItemId()
+                                            notes.get(openNotesNumber),
+                                            openNotesNumber
                                     )
                             )
                             .addToBackStack(null)
@@ -97,11 +103,6 @@ public class MainActivity extends AppCompatActivity implements NotesDetailsFragm
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        NavigationView navigationView = findViewById(R.id.navigation_view);
-        MenuItem myMoveGroupItem = navigationView.getMenu().findItem(R.id.act_notes);
-        SubMenu subMenu = myMoveGroupItem.getSubMenu();
-        DateFormat df = new SimpleDateFormat(getString(R.string.simple_date_format));
-
         switch (item.getItemId()) {
             case R.id.act_add_new:
                 Notes notesAdd = notesRepository.add(getString(R.string.empty_note),
@@ -118,7 +119,10 @@ public class MainActivity extends AppCompatActivity implements NotesDetailsFragm
                 getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.notes_list_fragment,
-                                NotesEditFragment.newInstance(notes.get(openNotesNumber))
+                                NotesEditFragment.newInstance(
+                                        notes.get(openNotesNumber),
+                                        openNotesNumber
+                                )
                         )
                         .addToBackStack(null)
                         .commit();
@@ -128,7 +132,10 @@ public class MainActivity extends AppCompatActivity implements NotesDetailsFragm
                     getSupportFragmentManager()
                             .beginTransaction()
                             .replace(R.id.notes_list_fragment,
-                                    NotesEditFragment.newInstance(notes.get(openNotesNumber))
+                                    NotesEditFragment.newInstance(
+                                            notes.get(openNotesNumber),
+                                            openNotesNumber
+                                    )
                             )
                             .addToBackStack(null)
                             .commit();
@@ -153,15 +160,21 @@ public class MainActivity extends AppCompatActivity implements NotesDetailsFragm
                     return true;
                 }
                 return false;
-            default:
-                Toast.makeText(getApplicationContext(), item.getTitle(), Toast.LENGTH_SHORT).show();
-                return true;
         }
+        return false;
     }
 
     @Override
     public void onChangeDataInList(int noteNumber, ArrayList<String> list, ArrayList<String> listDone) {
-        notesRepository.editNotes(noteNumber, list, listDone);
+        notesRepository.editList(noteNumber, list, listDone);
         notes = notesRepository.getNotes();
+    }
+
+    @Override
+    public void onChangeDataNotes(int noteNumber, Notes modifNote) {
+        notesRepository.editFull(noteNumber, modifNote);
+        notes = notesRepository.getNotes();
+        subMenu.getItem(noteNumber).setTitle(modifNote.getName() + " - " + df.format(new Date(modifNote.getDate())));
+        getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 }
