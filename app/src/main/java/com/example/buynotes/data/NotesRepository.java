@@ -7,20 +7,13 @@ public interface NotesRepository {
 
     List<Notes> getNotes();
 
-    void clear();
-
     void delete(int index);
 
     Notes add(String name, long date);
 
-    Notes addFull(String name,
-                  String memo,
-                  long date,
+    void editList(int number,
                   ArrayList<String> list,
                   ArrayList<String> listDone);
 
-    void editNotes(int number,
-                  ArrayList<String> list,
-                  ArrayList<String> listDone);
-
+    void editFull(int number, Notes note);
 }

@@ -37,11 +37,6 @@ public class NotesRepositoryImpl implements NotesRepository {
     }
 
     @Override
-    public void clear() {
-        notes.clear();
-    }
-
-    @Override
     public void delete(int index) {
         notes.remove(index);
     }
@@ -55,19 +50,15 @@ public class NotesRepositoryImpl implements NotesRepository {
     }
 
     @Override
-    public Notes addFull(String name, String memo, long date, ArrayList<String> list, ArrayList<String> listDone) {
-        Notes notesAdd = new Notes(name, date);
-        notesAdd.setMemo(memo);
-        notesAdd.setList(list);
-        notesAdd.setListDone(listDone);
-        notes.add(notesAdd);
-        return notesAdd;
-    }
-
-    @Override
-    public void editNotes(int number, ArrayList<String> list, ArrayList<String> listDone) {
+    public void editList(int number, ArrayList<String> list, ArrayList<String> listDone) {
         Notes notesGet = notes.get(number);
         notesGet.setList(list);
         notesGet.setListDone(listDone);
+    }
+
+    @Override
+    public void editFull(int number, Notes note) {
+        notes.remove(number);
+        notes.add(number, note);
     }
 }
