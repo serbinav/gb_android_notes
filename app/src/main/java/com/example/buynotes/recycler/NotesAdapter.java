@@ -17,7 +17,7 @@ import java.util.List;
 public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHolder> {
 
     public interface OnItemClickListener {
-        void onItemClickListener(@NonNull String str);
+        void onItemClickListener(@NonNull String str, int index);
     }
 
     public interface OnItemLongClickListener {
@@ -106,7 +106,8 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHold
 
             itemView.setOnClickListener(v -> {
                         if (getListener() != null) {
-                            getListener().onItemClickListener(todoList.get(getAdapterPosition()));
+                            int index = getAdapterPosition();
+                            getListener().onItemClickListener(todoList.get(index), index);
                         }
                     }
             );
