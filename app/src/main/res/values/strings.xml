@@ -15,16 +15,12 @@
     <string name="action_header">Учетная запись</string>
     <string name="main_window">Главное окно программы</string>
     <string name="icon_on_toolbar">Иконка на тулбаре</string>
-    <string name="action_duplicate">Дублировать</string>
-    <string name="action_rename">Переименовать</string>
-    <string name="action_clear">Очистить</string>
     <string name="action_del">Удалить</string>
     <string name="action_edit">Изменить</string>
-    <string name="action_done">Выполнено</string>
     <string name="action_add">Добавить</string>
     <string name="action_transfer">Переместить</string>
-    <string name="welldone">Успешно</string>
     <string name="list_tool_name">Кофе</string>
     <string name="empty_note">Пустая заметка</string>
     <string name="action_save">Сохранить</string>
+    <string name="action_edit_bad">Изменить(Добавить)</string>
 </resources>

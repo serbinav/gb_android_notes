@@ -15,16 +15,4 @@
         android:id="@+id/act_del"
         android:title="@string/action_del"
         app:showAsAction="never" />
-    <item
-        android:id="@+id/act_duplicate"
-        android:title="@string/action_duplicate"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/act_rename"
-        android:title="@string/action_rename"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/act_clear"
-        android:title="@string/action_clear"
-        app:showAsAction="never" />
 </menu>
