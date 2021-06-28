@@ -26,4 +26,5 @@
     <string name="welldone">Успешно</string>
     <string name="list_tool_name">Кофе</string>
     <string name="empty_note">Пустая заметка</string>
+    <string name="action_save">Сохранить</string>
 </resources>
