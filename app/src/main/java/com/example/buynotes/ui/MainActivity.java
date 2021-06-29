@@ -30,8 +30,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements NotesDetailsFragment.OnChangeDataInList,
         NotesEditFragment.OnChangeDataNotes {
 
-    private NotesRepository notesRepository = new NotesRepositoryImpl();
-    private List<Notes> notes = notesRepository.getNotes();
+    private final NotesRepository notesRepository = new NotesRepositoryImpl();
     private int openNotesNumber = -1;
 
     NavigationView navigationView;
@@ -61,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements NotesDetailsFragm
         myMoveGroupItem = navigationView.getMenu().findItem(R.id.act_notes);
         subMenu = myMoveGroupItem.getSubMenu();
         df = new SimpleDateFormat(getString(R.string.simple_date_format));
+        List<Notes> notes = notesRepository.getNotes();
         for (int i = 0; i < notes.size(); i++) {
             subMenu.add(
                     Menu.NONE,
@@ -103,6 +103,7 @@ public class MainActivity extends AppCompatActivity implements NotesDetailsFragm
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        List<Notes> notes = notesRepository.getNotes();
         switch (item.getItemId()) {
             case R.id.act_add_new:
                 Notes notesAdd = notesRepository.add(getString(R.string.empty_note),
@@ -167,13 +168,11 @@ public class MainActivity extends AppCompatActivity implements NotesDetailsFragm
     @Override
     public void onChangeDataInList(int noteNumber, ArrayList<String> list, ArrayList<String> listDone) {
         notesRepository.editList(noteNumber, list, listDone);
-        notes = notesRepository.getNotes();
     }
 
     @Override
     public void onChangeDataNotes(int noteNumber, Notes modifNote) {
         notesRepository.editFull(noteNumber, modifNote);
-        notes = notesRepository.getNotes();
         subMenu.getItem(noteNumber).setTitle(modifNote.getName() + " - " + df.format(new Date(modifNote.getDate())));
         getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }

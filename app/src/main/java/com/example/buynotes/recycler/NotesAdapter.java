@@ -87,8 +87,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHold
 
     @Override
     public void onBindViewHolder(@NonNull NotesAdapter.NoteViewHolder holder, int position) {
-        holder.title.setText(todoList.get(position));
-        holder.title.setBackgroundColor(colorRes);
+        holder.bind(todoList.get(position));
     }
 
     @Override
@@ -123,6 +122,11 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHold
             });
 
             title = itemView.findViewById(R.id.elem_name);
+        }
+
+        public void bind(String todo) {
+            title.setText(todo);
+            title.setBackgroundColor(colorRes);
         }
     }
 }
