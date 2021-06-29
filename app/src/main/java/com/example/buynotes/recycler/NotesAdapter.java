@@ -42,6 +42,12 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHold
         return todoList.size() - 1;
     }
 
+    public int edit(int number, String str) {
+        todoList.remove(number);
+        todoList.add(number, str);
+        return number;
+    }
+
     public ArrayList<String> get() {
         return todoList;
     }

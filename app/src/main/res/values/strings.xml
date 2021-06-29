@@ -22,7 +22,7 @@
     <string name="list_tool_name">Кофе</string>
     <string name="empty_note">Пустая заметка</string>
     <string name="action_save">Сохранить</string>
-    <string name="action_edit_bad">Изменить(Добавить)</string>
+    <string name="action_edit_bad">Изменить</string>
     <string name="alert_title">Внимание</string>
     <string name="alert_message">Вы уверены, что хотите удалить элемент?</string>
     <string name="alert_positive_btn">Да</string>
