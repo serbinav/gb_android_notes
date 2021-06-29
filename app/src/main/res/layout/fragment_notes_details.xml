@@ -73,5 +73,8 @@
             android:id="@+id/list_done_elem">
         </androidx.recyclerview.widget.RecyclerView>
 
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/padding_default" />
     </LinearLayout>
 </ScrollView>
