@@ -1,10 +1,12 @@
 package com.example.buynotes.ui;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
@@ -191,8 +194,7 @@ public class NotesEditFragment extends Fragment {
         menu.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
                 case R.id.act_add:
-                    int pos = adapter.add("новое дело");
-                    adapter.notifyItemInserted(pos);
+                    ShowCustomDialog(false, adapter);
                     return true;
                 default:
                     Toast.makeText(requireContext(),
@@ -217,12 +219,10 @@ public class NotesEditFragment extends Fragment {
         if (adapter == ChooseAdapter.NOTES_ADAPTER) {
             switch (item.getItemId()) {
                 case R.id.act_edit:
-                    int pos = notesAdapter.add("новое дело");
-                    notesAdapter.notifyItemInserted(pos);
+                    ShowCustomDialog(true, notesAdapter);
                     break;
                 case R.id.act_delete:
-                    notesAdapter.remove(longClickIndex);
-                    notesAdapter.notifyItemRemoved(longClickIndex);
+                    ShowAlertDialog(notesAdapter);
                     break;
             }
             return true;
@@ -230,16 +230,64 @@ public class NotesEditFragment extends Fragment {
         if (adapter == ChooseAdapter.NOTES_DONE_ADAPTER) {
             switch (item.getItemId()) {
                 case R.id.act_edit:
-                    int pos = notesDoneAdapter.add("новое дело");
-                    notesDoneAdapter.notifyItemInserted(pos);
+                    ShowCustomDialog(true, notesDoneAdapter);
                     break;
                 case R.id.act_delete:
-                    notesDoneAdapter.remove(longClickIndex);
-                    notesDoneAdapter.notifyItemRemoved(longClickIndex);
+                    ShowAlertDialog(notesDoneAdapter);
                     break;
             }
             return true;
         }
         return super.onContextItemSelected(item);
+    }
+
+    private void ShowAlertDialog(NotesAdapter adapter) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext())
+                .setTitle(R.string.alert_title)
+                .setMessage(R.string.alert_message)
+                .setPositiveButton(R.string.alert_positive_btn, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        adapter.remove(longClickIndex);
+                        adapter.notifyItemRemoved(longClickIndex);
+                    }
+                })
+                .setNegativeButton(R.string.alert_negative_btn, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+        builder.show();
+    }
+
+    private void ShowCustomDialog(boolean isEdit, NotesAdapter adapter) {
+        View view = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_edit, null, false);
+        EditText editText = view.findViewById(R.id.edit_elem);
+        if (isEdit) {
+            editText.setText(longClickStr);
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext())
+                .setView(view)
+                .setPositiveButton(R.string.alert_positive_btn, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (editText.getText() != null && !editText.getText().toString().isEmpty()) {
+                            if (isEdit) {
+                                int pos = adapter.edit(longClickIndex, editText.getText().toString());
+                                adapter.notifyItemChanged(pos);
+                            } else {
+                                int pos = adapter.add(editText.getText().toString());
+                                adapter.notifyItemInserted(pos);
+                            }
+                        }
+                    }
+                })
+                .setNegativeButton(R.string.alert_negative_btn, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+        builder.show();
     }
 }

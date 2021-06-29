@@ -37,13 +37,19 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHold
         todoList.addAll(toSet);
     }
 
+    public ArrayList<String> get() {
+        return todoList;
+    }
+
     public int add(String str) {
         todoList.add(str);
         return todoList.size() - 1;
     }
 
-    public ArrayList<String> get() {
-        return todoList;
+    public int edit(int number, String str) {
+        todoList.remove(number);
+        todoList.add(number, str);
+        return number;
     }
 
     public void remove(int index) {
@@ -87,8 +93,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHold
 
     @Override
     public void onBindViewHolder(@NonNull NotesAdapter.NoteViewHolder holder, int position) {
-        holder.title.setText(todoList.get(position));
-        holder.title.setBackgroundColor(colorRes);
+        holder.bind(todoList.get(position));
     }
 
     @Override
@@ -123,6 +128,11 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHold
             });
 
             title = itemView.findViewById(R.id.elem_name);
+        }
+
+        public void bind(String todo) {
+            title.setText(todo);
+            title.setBackgroundColor(colorRes);
         }
     }
 }
