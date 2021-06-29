@@ -1,10 +1,12 @@
 package com.example.buynotes.ui;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -221,8 +223,7 @@ public class NotesEditFragment extends Fragment {
                     notesAdapter.notifyItemInserted(pos);
                     break;
                 case R.id.act_delete:
-                    notesAdapter.remove(longClickIndex);
-                    notesAdapter.notifyItemRemoved(longClickIndex);
+                    ShowAlertDialog(notesAdapter);
                     break;
             }
             return true;
@@ -234,12 +235,30 @@ public class NotesEditFragment extends Fragment {
                     notesDoneAdapter.notifyItemInserted(pos);
                     break;
                 case R.id.act_delete:
-                    notesDoneAdapter.remove(longClickIndex);
-                    notesDoneAdapter.notifyItemRemoved(longClickIndex);
+                    ShowAlertDialog(notesDoneAdapter);
                     break;
             }
             return true;
         }
         return super.onContextItemSelected(item);
+    }
+
+    private void ShowAlertDialog(NotesAdapter adapter) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext())
+                .setTitle(R.string.alert_title)
+                .setMessage(R.string.alert_message)
+                .setPositiveButton(R.string.alert_positive_btn, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        adapter.remove(longClickIndex);
+                        adapter.notifyItemRemoved(longClickIndex);
+                    }
+                })
+                .setNegativeButton(R.string.alert_negative_btn, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+        builder.show();
     }
 }
