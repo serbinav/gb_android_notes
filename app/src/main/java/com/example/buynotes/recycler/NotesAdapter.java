@@ -37,6 +37,10 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHold
         todoList.addAll(toSet);
     }
 
+    public ArrayList<String> get() {
+        return todoList;
+    }
+
     public int add(String str) {
         todoList.add(str);
         return todoList.size() - 1;
@@ -46,10 +50,6 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHold
         todoList.remove(number);
         todoList.add(number, str);
         return number;
-    }
-
-    public ArrayList<String> get() {
-        return todoList;
     }
 
     public void remove(int index) {
