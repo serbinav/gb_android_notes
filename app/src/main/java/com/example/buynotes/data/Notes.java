@@ -4,14 +4,15 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Notes implements Parcelable {
 
     private String name;
     private String memo;
     private long date;
-    private ArrayList<String> list = new ArrayList();
-    private ArrayList<String> listDone = new ArrayList();
+    private List<String> list = new ArrayList();
+    private List<String> listDone = new ArrayList();
 
     public Notes(String name, long date) {
         this.name = name;
@@ -76,19 +77,19 @@ public class Notes implements Parcelable {
         this.date = date;
     }
 
-    public ArrayList<String> getList() {
+    public List<String> getList() {
         return list;
     }
 
-    public void setList(ArrayList<String> list) {
+    public void setList(List<String> list) {
         this.list = list;
     }
 
-    public ArrayList<String> getListDone() {
+    public List<String> getListDone() {
         return listDone;
     }
 
-    public void setListDone(ArrayList<String> listDone) {
+    public void setListDone(List<String> listDone) {
         this.listDone = listDone;
     }
 }

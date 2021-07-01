@@ -1,12 +1,21 @@
 package com.example.buynotes.data;
 
+import android.os.Handler;
+import android.os.Looper;
+
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class NotesRepositoryImpl implements NotesRepository {
 
     private final ArrayList<Notes> notes = new ArrayList<>();
+
+    private ExecutorService executor = Executors.newSingleThreadExecutor();
+
+    private Handler handler = new Handler(Looper.getMainLooper());
 
     public NotesRepositoryImpl(){
         Notes note2 = new Notes("покупки",
@@ -31,26 +40,45 @@ public class NotesRepositoryImpl implements NotesRepository {
         notes.add(note3);
     }
 
+    //Thread.sleep здесь добавлен для наглядности
     @Override
-    public List<Notes> getNotes() {
-        return notes;
+    public void getNotes(Callback<List<Notes>> callback) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(2_000L);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        callback.onSuccess(notes);
+                    }
+                });
+            }
+        });
     }
 
+    //Здесь date не используется, добавлена для Firebase
     @Override
-    public void delete(int index) {
+    public void remove(int index, long date, Callback<Object> callback) {
         notes.remove(index);
+        callback.onSuccess(index);
     }
 
     @Override
-    public Notes add(String name, long date) {
+    public void add(String name, long date, Callback<Notes> callback) {
         //UUID.randomUUID().toString()
         Notes notesAdd = new Notes(name, date);
         notes.add(notesAdd);
-        return notesAdd;
+        callback.onSuccess(notesAdd);
     }
 
     @Override
-    public void editList(int number, ArrayList<String> list, ArrayList<String> listDone) {
+    public void editList(int number, List<String> list, List<String> listDone) {
         Notes notesGet = notes.get(number);
         notesGet.setList(list);
         notesGet.setListDone(listDone);
