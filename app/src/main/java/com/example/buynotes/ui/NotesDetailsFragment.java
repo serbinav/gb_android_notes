@@ -20,13 +20,13 @@ import com.google.android.material.textfield.TextInputEditText;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class NotesDetailsFragment extends Fragment {
 
     public interface OnChangeDataInList {
-        void onChangeDataInList(int noteNumber, ArrayList<String> list, ArrayList<String> listDone);
+        void onChangeDataInList(int noteNumber, List<String> list, List<String> listDone);
     }
 
     private static final String ARG_NOTES = "ARG_NOTES";

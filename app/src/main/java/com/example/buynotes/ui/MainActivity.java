@@ -12,17 +12,19 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.buynotes.R;
+import com.example.buynotes.data.Callback;
 import com.example.buynotes.data.Notes;
+import com.example.buynotes.data.NotesFirestoreRepositoryImpl;
 import com.example.buynotes.data.NotesRepository;
-import com.example.buynotes.data.NotesRepositoryImpl;
 import com.google.android.material.navigation.NavigationView;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -30,9 +32,12 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements NotesDetailsFragment.OnChangeDataInList,
         NotesEditFragment.OnChangeDataNotes {
 
-    private final NotesRepository notesRepository = new NotesRepositoryImpl();
+    private final NotesRepository notesRepository = new NotesFirestoreRepositoryImpl();
+    private List<Notes> notes;
     private int openNotesNumber = -1;
+    private long openNotesDate = -1L;
 
+    ProgressBar progressBar;
     NavigationView navigationView;
     MenuItem myMoveGroupItem;
     SubMenu subMenu;
@@ -56,41 +61,51 @@ public class MainActivity extends AppCompatActivity implements NotesDetailsFragm
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
+        progressBar = findViewById(R.id.progress);
         navigationView = findViewById(R.id.navigation_view);
         myMoveGroupItem = navigationView.getMenu().findItem(R.id.act_notes);
         subMenu = myMoveGroupItem.getSubMenu();
         df = new SimpleDateFormat(getString(R.string.simple_date_format));
-        List<Notes> notes = notesRepository.getNotes();
-        for (int i = 0; i < notes.size(); i++) {
-            subMenu.add(
-                    Menu.NONE,
-                    i,
-                    Menu.NONE,
-                    notes.get(i).getName() + " - " + df.format(new Date(notes.get(i).getDate()))
-            );
-        }
 
-        navigationView.setNavigationItemSelectedListener(item -> {
-            drawerLayout.closeDrawer(GravityCompat.START);
-            switch (item.getItemId()) {
-                case R.id.act_feedback:
-                case R.id.act_settings:
-                case R.id.act_help:
-                    Toast.makeText(getApplicationContext(), item.getTitle(), Toast.LENGTH_SHORT).show();
-                    return true;
-                default:
-                    openNotesNumber = item.getItemId();
-                    getSupportFragmentManager()
-                            .beginTransaction()
-                            .replace(R.id.notes_list_fragment,
-                                    NotesDetailsFragment.newInstance(
-                                            notes.get(openNotesNumber),
-                                            openNotesNumber
+        progressBar.setVisibility(View.VISIBLE);
+        notesRepository.getNotes(new Callback<List<Notes>>() {
+            @Override
+            public void onSuccess(List<Notes> result) {
+                notes = result;
+                for (int i = 0; i < result.size(); i++) {
+                    subMenu.add(
+                            Menu.NONE,
+                            i,
+                            Menu.NONE,
+                            result.get(i).getName() + " - " + df.format(new Date(notes.get(i).getDate()))
+                    );
+                }
+                navigationView.setNavigationItemSelectedListener(item -> {
+                    drawerLayout.closeDrawer(GravityCompat.START);
+                    switch (item.getItemId()) {
+                        case R.id.act_feedback:
+                        case R.id.act_settings:
+                        case R.id.act_help:
+                            Toast.makeText(getApplicationContext(), item.getTitle(), Toast.LENGTH_SHORT).show();
+                            return true;
+                        default:
+                            openNotesNumber = item.getItemId();
+                            openNotesDate = result.get(openNotesNumber).getDate();
+
+                            getSupportFragmentManager()
+                                    .beginTransaction()
+                                    .replace(R.id.notes_list_fragment,
+                                            NotesDetailsFragment.newInstance(
+                                                    result.get(openNotesNumber),
+                                                    openNotesNumber
+                                            )
                                     )
-                            )
-                            .addToBackStack(null)
-                            .commit();
-                    return true;
+                                    .addToBackStack(null)
+                                    .commit();
+                            return true;
+                    }
+                });
+                progressBar.setVisibility(View.GONE);
             }
         });
     }
@@ -103,33 +118,43 @@ public class MainActivity extends AppCompatActivity implements NotesDetailsFragm
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        List<Notes> notes = notesRepository.getNotes();
         switch (item.getItemId()) {
             case R.id.act_add_new:
-                Notes notesAdd = notesRepository.add(getString(R.string.empty_note),
-                        Calendar.getInstance().getTimeInMillis());
-                notes = notesRepository.getNotes();
+                progressBar.setVisibility(View.VISIBLE);
+                notesRepository.add(getString(R.string.empty_note),
+                        Calendar.getInstance().getTimeInMillis(), new Callback<Notes>() {
+                            @Override
+                            public void onSuccess(Notes resultNote) {
+                                notesRepository.getNotes(new Callback<List<Notes>>() {
+                                    @Override
+                                    public void onSuccess(List<Notes> resultList) {
+                                        subMenu.add(
+                                                Menu.NONE,
+                                                resultList.size() - 1,
+                                                Menu.NONE,
+                                                resultNote.getName() + " - " + df.format(new Date(resultNote.getDate()))
+                                        );
+                                        openNotesNumber = resultList.size() - 1;
+                                        openNotesDate = resultList.get(openNotesNumber).getDate();
 
-                subMenu.add(
-                        Menu.NONE,
-                        notes.size() - 1,
-                        Menu.NONE,
-                        notesAdd.getName() + " - " + df.format(new Date(notesAdd.getDate()))
-                );
-                openNotesNumber = notes.size() - 1;
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.notes_list_fragment,
-                                NotesEditFragment.newInstance(
-                                        notes.get(openNotesNumber),
-                                        openNotesNumber
-                                )
-                        )
-                        .addToBackStack(null)
-                        .commit();
+                                        getSupportFragmentManager()
+                                                .beginTransaction()
+                                                .replace(R.id.notes_list_fragment,
+                                                        NotesEditFragment.newInstance(
+                                                                resultList.get(openNotesNumber),
+                                                                openNotesNumber
+                                                        )
+                                                )
+                                                .addToBackStack(null)
+                                                .commit();
+                                        progressBar.setVisibility(View.GONE);
+                                    }
+                                });
+                            }
+                        });
                 return true;
             case R.id.act_edit:
-                if (openNotesNumber >= 0) {
+                if (openNotesNumber >= 0 && openNotesDate > 0) {
                     getSupportFragmentManager()
                             .beginTransaction()
                             .replace(R.id.notes_list_fragment,
@@ -144,20 +169,31 @@ public class MainActivity extends AppCompatActivity implements NotesDetailsFragm
                 }
                 return false;
             case R.id.act_del:
-                if (openNotesNumber >= 0) {
-                    notesRepository.delete(openNotesNumber);
-                    notes = notesRepository.getNotes();
-                    subMenu.clear();
-                    for (int i = 0; i < notes.size(); i++) {
-                        subMenu.add(
-                                Menu.NONE,
-                                i,
-                                Menu.NONE,
-                                notes.get(i).getName() + " - " + df.format(new Date(notes.get(i).getDate()))
-                        );
-                    }
-                    getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                    openNotesNumber = openNotesNumber - 1;
+                if (openNotesNumber >= 0 && openNotesDate > 0 ) {
+                    progressBar.setVisibility(View.VISIBLE);
+                    notesRepository.remove(openNotesNumber, openNotesDate, new Callback<Object>() {
+                        @Override
+                        public void onSuccess(Object result) {
+                            subMenu.clear();
+                            notesRepository.getNotes(new Callback<List<Notes>>() {
+                                @Override
+                                public void onSuccess(List<Notes> result) {
+                                    for (int i = 0; i < result.size(); i++) {
+                                        subMenu.add(
+                                                Menu.NONE,
+                                                i,
+                                                Menu.NONE,
+                                                result.get(i).getName() + " - " + df.format(new Date(result.get(i).getDate()))
+                                        );
+                                    }
+                                    getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                                    openNotesNumber = -1;
+                                    openNotesDate = -1L;
+                                    progressBar.setVisibility(View.GONE);
+                                }
+                            });
+                        }
+                    });
                     return true;
                 }
                 return false;
@@ -166,7 +202,7 @@ public class MainActivity extends AppCompatActivity implements NotesDetailsFragm
     }
 
     @Override
-    public void onChangeDataInList(int noteNumber, ArrayList<String> list, ArrayList<String> listDone) {
+    public void onChangeDataInList(int noteNumber, List<String> list, List<String> listDone) {
         notesRepository.editList(noteNumber, list, listDone);
     }
 
