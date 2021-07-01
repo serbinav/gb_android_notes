@@ -7,6 +7,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentResultListener;
 
 import android.os.Bundle;
 import android.view.Menu;
@@ -14,6 +15,7 @@ import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.buynotes.R;
@@ -106,6 +108,15 @@ public class MainActivity extends AppCompatActivity implements NotesDetailsFragm
                     }
                 });
                 progressBar.setVisibility(View.GONE);
+            }
+        });
+
+        getSupportFragmentManager().setFragmentResultListener(EmptyNotesFragment.AUTH_RESULT, this, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+                View header = navigationView.getHeaderView(0);
+                TextView email = header.findViewById(R.id.account_email);
+                email.setText(result.getString(EmptyNotesFragment.EMAIL));
             }
         });
     }
