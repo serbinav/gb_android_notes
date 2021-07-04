@@ -66,6 +66,11 @@ public class EmptyNotesFragment extends Fragment {
                 startActivityForResult(intent, AUTH_REQUEST_ID);
             }
         });
+
+        GoogleSignInAccount lastSignedInAccount = GoogleSignIn.getLastSignedInAccount(requireContext());
+        if (lastSignedInAccount != null) {
+            sendResultAndHideButton(lastSignedInAccount.getEmail());
+        }
     }
 
     @Override
@@ -75,16 +80,18 @@ public class EmptyNotesFragment extends Fragment {
         if (requestCode == AUTH_REQUEST_ID) {
             Task<GoogleSignInAccount> accountTask = GoogleSignIn.getSignedInAccountFromIntent(data);
 
-            Bundle args = new Bundle();
-            args.putString(EMAIL, accountTask.getResult().getEmail());
-            getParentFragmentManager().setFragmentResult(AUTH_RESULT, args);
-            signInButton.setVisibility(View.GONE);
-
             try {
-                GoogleSignInAccount account = accountTask.getResult();
+                sendResultAndHideButton(accountTask.getResult().getEmail());
             } catch (Exception ex) {
                 Toast.makeText(requireContext(), "Auth Failed", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    public void sendResultAndHideButton(String email) {
+        Bundle args = new Bundle();
+        args.putString(EMAIL, email);
+        getParentFragmentManager().setFragmentResult(AUTH_RESULT, args);
+        signInButton.setVisibility(View.GONE);
     }
 }
