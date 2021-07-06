@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.PopupMenu;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.buynotes.R;
@@ -40,6 +41,7 @@ public class NotesEditFragment extends Fragment {
 
     private static final String ARG_NOTES = "ARG_NOTES";
     private static final String ARG_NOTES_NUMBER = "ARG_NOTES_NUMBER";
+    private TextView notesId;
     private TextInputEditText notesName;
     private DatePicker notesDate;
     private TextInputEditText notesMemo;
@@ -106,6 +108,7 @@ public class NotesEditFragment extends Fragment {
                                 notesDate.getMonth(),
                                 notesDate.getDayOfMonth()
                         ).getTimeInMillis());
+                modifNote.setId(notesId.getText().toString());
                 modifNote.setMemo(notesMemo.getText().toString());
                 modifNote.setList(notesAdapter.get());
                 modifNote.setListDone(notesDoneAdapter.get());
@@ -119,6 +122,7 @@ public class NotesEditFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        notesId = view.findViewById(R.id.id);
         notesName = view.findViewById(R.id.name);
         notesDate = view.findViewById(R.id.date);
         notesMemo = view.findViewById(R.id.memo);
@@ -129,6 +133,7 @@ public class NotesEditFragment extends Fragment {
         if (args != null && args.containsKey(ARG_NOTES)) {
             Notes note = args.getParcelable(ARG_NOTES);
             currentNoteNumber = args.getInt(ARG_NOTES_NUMBER);
+            notesId.setText(note.getId());
             notesName.setText(note.getName());
 
             Calendar calendar = Calendar.getInstance();
