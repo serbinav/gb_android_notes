@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -26,7 +27,7 @@ public class NotesFirestoreRepositoryImpl implements NotesRepository {
     private final static String LIST_DONE = "listDone";
 
     @Override
-    public void getNotes(Callback<List<Notes>> callback) {
+    public void getAll(Callback<List<Notes>> callback) {
         firebaseFirestore.collection(NOTES)
                 .orderBy(DATE, Query.Direction.ASCENDING)
                 .get()
@@ -45,9 +46,10 @@ public class NotesFirestoreRepositoryImpl implements NotesRepository {
                                 List<String> listDone = (List<String>) document.get(LIST_DONE);
 
                                 Notes note = new Notes(name, date);
+                                note.setId(document.getId());
+                                note.setMemo(memo);
                                 note.setList(list);
                                 note.setListDone(listDone);
-                                note.setMemo(memo);
                                 result.add(note);
                             }
 
@@ -55,6 +57,38 @@ public class NotesFirestoreRepositoryImpl implements NotesRepository {
                         } else {
                             task.getException();
                         }
+                    }
+                });
+    }
+
+    @Override
+    public void get(int index, String id, Callback<Notes> callback) {
+        firebaseFirestore.collection(NOTES)
+                .document(id)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot doc = task.getResult();
+
+                            String name = (String) doc.get(NAME);
+                            String memo = (String) doc.get(MEMO);
+                            long date = (long) doc.get(DATE);
+                            List<String> list = (List<String>) doc.get(LIST);
+                            List<String> listDone = (List<String>) doc.get(LIST_DONE);
+
+                            Notes note = new Notes(name, date);
+                            note.setId(doc.getId());
+                            note.setMemo(memo);
+                            note.setList(list);
+                            note.setListDone(listDone);
+
+                            callback.onSuccess(note);
+                        } else {
+                            task.getException();
+                        }
+
                     }
                 });
     }
@@ -71,34 +105,11 @@ public class NotesFirestoreRepositoryImpl implements NotesRepository {
                 .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentReference> task) {
-                        Notes note = new Notes(name, date);
-
-                        callback.onSuccess(note);
-                    }
-                });
-    }
-
-    @Override
-    public void remove(int index, long date, Callback<Object> callback) {
-        firebaseFirestore.collection(NOTES)
-                .whereEqualTo(DATE, date)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot doc : task.getResult()) {
-                                firebaseFirestore.collection(NOTES)
-                                        .document(doc.getId())
-                                        .delete()
-                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                callback.onSuccess(index);
-                                            }
-                                        });
-                            }
+                            Notes note = new Notes(name, date);
+                            note.setId(task.getResult().getId());
 
+                            callback.onSuccess(note);
                         } else {
                             task.getException();
                         }
@@ -107,12 +118,55 @@ public class NotesFirestoreRepositoryImpl implements NotesRepository {
     }
 
     @Override
-    public void editList(int number, List<String> list, List<String> listDone) {
+    public void remove(int index, String id, Callback<Object> callback) {
+        firebaseFirestore.collection(NOTES)
+                .document(id)
+                .delete()
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        callback.onSuccess(index);
+                    }
+                });
+    }
+
+    @Override
+    public void editNoteList(int index,
+                             String id,
+                             List<String> list,
+                             List<String> listDone,
+                             Callback<Object> callback) {
+        HashMap<String, Object> data = new HashMap<>();
+        data.put(LIST, list);
+        data.put(LIST_DONE, listDone);
+        firebaseFirestore.collection(NOTES)
+                .document(id)
+                .update(data)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        callback.onSuccess(index);
+                    }
+                });
 
     }
 
     @Override
-    public void editFull(int number, Notes note) {
-
+    public void editNote(int index, Notes note, Callback<Object> callback) {
+        HashMap<String, Object> data = new HashMap<>();
+        data.put(NAME, note.getName());
+        data.put(DATE, note.getDate());
+        data.put(MEMO, note.getMemo());
+        data.put(LIST, note.getList());
+        data.put(LIST_DONE, note.getListDone());
+        firebaseFirestore.collection(NOTES)
+                .document(note.getId())
+                .update(data)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        callback.onSuccess(index);
+                    }
+                });
     }
 }

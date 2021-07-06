@@ -4,15 +4,19 @@ import java.util.List;
 
 public interface NotesRepository {
 
-    void getNotes(Callback<List<Notes>> callback);
+    void getAll(Callback<List<Notes>> callback);
 
-    void remove(int index, long date, Callback<Object> callback);
+    void get(int index, String id, Callback<Notes> callback);
 
     void add(String name, long date, Callback<Notes> callback);
 
-    void editList(int number,
-                  List<String> list,
-                  List<String> listDone);
+    void remove(int index, String id, Callback<Object> callback);
 
-    void editFull(int number, Notes note);
+    void editNoteList(int index,
+                  String id,
+                  List<String> list,
+                  List<String> listDone,
+                  Callback<Object> callback);
+
+    void editNote(int index, Notes note, Callback<Object> callback);
 }
