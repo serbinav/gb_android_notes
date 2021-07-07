@@ -1,19 +1,22 @@
 package com.example.buynotes.data;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public interface NotesRepository {
 
-    List<Notes> getNotes();
+    void getAll(Callback<List<Notes>> callback);
 
-    void delete(int index);
+    void get(int index, String id, Callback<Notes> callback);
 
-    Notes add(String name, long date);
+    void add(String name, long date, Callback<Notes> callback);
 
-    void editList(int number,
-                  ArrayList<String> list,
-                  ArrayList<String> listDone);
+    void remove(int index, String id, Callback<Object> callback);
 
-    void editFull(int number, Notes note);
+    void editNoteList(int index,
+                  String id,
+                  List<String> list,
+                  List<String> listDone,
+                  Callback<Object> callback);
+
+    void editNote(int index, Notes note, Callback<Object> callback);
 }

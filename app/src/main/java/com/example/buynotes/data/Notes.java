@@ -4,40 +4,31 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 public class Notes implements Parcelable {
 
+    private String id;
     private String name;
     private String memo;
     private long date;
-    private ArrayList<String> list = new ArrayList();
-    private ArrayList<String> listDone = new ArrayList();
+    private List<String> list = new ArrayList();
+    private List<String> listDone = new ArrayList();
 
     public Notes(String name, long date) {
+        this.name = UUID.randomUUID().toString();
         this.name = name;
         this.date = date;
     }
 
     protected Notes(Parcel in) {
+        id = in.readString();
         name = in.readString();
         memo = in.readString();
         date = in.readLong();
         list = in.createStringArrayList();
         listDone = in.createStringArrayList();
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(name);
-        dest.writeString(memo);
-        dest.writeLong(date);
-        dest.writeStringList(list);
-        dest.writeStringList(listDone);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
     }
 
     public static final Creator<Notes> CREATOR = new Creator<Notes>() {
@@ -51,6 +42,29 @@ public class Notes implements Parcelable {
             return new Notes[size];
         }
     };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(name);
+        dest.writeString(memo);
+        dest.writeLong(date);
+        dest.writeStringList(list);
+        dest.writeStringList(listDone);
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;
@@ -76,19 +90,19 @@ public class Notes implements Parcelable {
         this.date = date;
     }
 
-    public ArrayList<String> getList() {
+    public List<String> getList() {
         return list;
     }
 
-    public void setList(ArrayList<String> list) {
+    public void setList(List<String> list) {
         this.list = list;
     }
 
-    public ArrayList<String> getListDone() {
+    public List<String> getListDone() {
         return listDone;
     }
 
-    public void setListDone(ArrayList<String> listDone) {
+    public void setListDone(List<String> listDone) {
         this.listDone = listDone;
     }
 }

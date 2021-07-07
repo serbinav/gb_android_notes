@@ -25,7 +25,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHold
     }
 
     private Fragment fragment;
-    private ArrayList<String> todoList = new ArrayList<>();
+    private List<String> todoList = new ArrayList<>();
     private int colorRes;
 
     public NotesAdapter(Fragment fragment) {
@@ -37,7 +37,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHold
         todoList.addAll(toSet);
     }
 
-    public ArrayList<String> get() {
+    public List<String> get() {
         return todoList;
     }
 

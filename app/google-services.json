@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "861387424487",
+    "project_id": "buynotesgeek",
+    "storage_bucket": "buynotesgeek.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:861387424487:android:e6d8a91d318dfc4ab75842",
+        "android_client_info": {
+          "package_name": "com.example.buynotes"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "861387424487-ivk7to7b9u5g5s7nmfnolkbq1k2tb4s2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.buynotes",
+            "certificate_hash": "fc711586504524216efe42d5da637ffb05326cb9"
+          }
+        },
+        {
+          "client_id": "861387424487-ht9p75raicp34jhnu2ini8qtovifg9j9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDiOiB5GLQpmkRArxhi8gpcNGSdyXKwdvk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "861387424487-ht9p75raicp34jhnu2ini8qtovifg9j9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
