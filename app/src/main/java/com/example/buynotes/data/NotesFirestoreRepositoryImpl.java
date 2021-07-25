@@ -35,22 +35,23 @@ public class NotesFirestoreRepositoryImpl implements NotesRepository {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-
                             ArrayList<Notes> result = new ArrayList<>();
 
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                String name = (String) document.get(NAME);
-                                String memo = (String) document.get(MEMO);
-                                long date = (long) document.get(DATE);
-                                List<String> list = (List<String>) document.get(LIST);
-                                List<String> listDone = (List<String>) document.get(LIST_DONE);
+                                if (document != null) {
+                                    String name = (String) document.get(NAME);
+                                    String memo = (String) document.get(MEMO);
+                                    long date = (long) document.get(DATE);
+                                    List<String> list = (List<String>) document.get(LIST);
+                                    List<String> listDone = (List<String>) document.get(LIST_DONE);
 
-                                Notes note = new Notes(name, date);
-                                note.setId(document.getId());
-                                note.setMemo(memo);
-                                note.setList(list);
-                                note.setListDone(listDone);
-                                result.add(note);
+                                    Notes note = new Notes(name, date);
+                                    note.setId(document.getId());
+                                    note.setMemo(memo);
+                                    note.setList(list);
+                                    note.setListDone(listDone);
+                                    result.add(note);
+                                }
                             }
 
                             callback.onSuccess(result);
@@ -71,20 +72,21 @@ public class NotesFirestoreRepositoryImpl implements NotesRepository {
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                         if (task.isSuccessful()) {
                             DocumentSnapshot doc = task.getResult();
+                            if (doc != null) {
+                                String name = (String) doc.get(NAME);
+                                String memo = (String) doc.get(MEMO);
+                                long date = (long) doc.get(DATE);
+                                List<String> list = (List<String>) doc.get(LIST);
+                                List<String> listDone = (List<String>) doc.get(LIST_DONE);
 
-                            String name = (String) doc.get(NAME);
-                            String memo = (String) doc.get(MEMO);
-                            long date = (long) doc.get(DATE);
-                            List<String> list = (List<String>) doc.get(LIST);
-                            List<String> listDone = (List<String>) doc.get(LIST_DONE);
+                                Notes note = new Notes(name, date);
+                                note.setId(doc.getId());
+                                note.setMemo(memo);
+                                note.setList(list);
+                                note.setListDone(listDone);
 
-                            Notes note = new Notes(name, date);
-                            note.setId(doc.getId());
-                            note.setMemo(memo);
-                            note.setList(list);
-                            note.setListDone(listDone);
-
-                            callback.onSuccess(note);
+                                callback.onSuccess(note);
+                            }
                         } else {
                             task.getException();
                         }
@@ -106,10 +108,13 @@ public class NotesFirestoreRepositoryImpl implements NotesRepository {
                     @Override
                     public void onComplete(@NonNull Task<DocumentReference> task) {
                         if (task.isSuccessful()) {
-                            Notes note = new Notes(name, date);
-                            note.setId(task.getResult().getId());
+                            DocumentReference result = task.getResult();
+                            if (result != null) {
+                                Notes note = new Notes(name, date);
+                                note.setId(result.getId());
 
-                            callback.onSuccess(note);
+                                callback.onSuccess(note);
+                            }
                         } else {
                             task.getException();
                         }
